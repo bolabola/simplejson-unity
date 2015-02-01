@@ -461,7 +461,7 @@ namespace SimpleJSON
         {
 #if USE_FileIO
             System.IO.Directory.CreateDirectory((new System.IO.FileInfo(aFileName)).Directory.FullName);
-            using(var F = System.IO.File.OpenWrite(aFileName))
+            using (var F = new FileStream(aFileName, FileMode.Create, FileAccess.Write))
             {
                 SaveToCompressedStream(F);
             }
@@ -498,7 +498,7 @@ namespace SimpleJSON
         {
 #if USE_FileIO
             System.IO.Directory.CreateDirectory((new System.IO.FileInfo(aFileName)).Directory.FullName);
-            using (var F = System.IO.File.OpenWrite(aFileName))
+            using (var F = new FileStream(aFileName, FileMode.Create, FileAccess.Write))
             {
                 SaveToStream(F);
             }
