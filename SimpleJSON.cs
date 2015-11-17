@@ -40,8 +40,19 @@
  * - The serializer uses different types when it comes to store the values. Since my data values
  *   are all of type string, the serializer will "try" which format fits best. The order is: int, float, double, bool, string.
  *   It's not the most efficient way but for a moderate amount of data it should work on all platforms.
- * 
- * * * * */
+ *  
+ *  
+ *  2015-11-17 
+ *  -line 464:var F = System.IO.File.OpenWrite(aFileName)-->var F = new FileStream(aFileName, FileMode.Create, FileAccess.Write)
+ *  -line 501:var F = System.IO.File.OpenWrite(aFileName)-->var F = new FileStream(aFileName, FileMode.Create, FileAccess.Write)
+ *  
+ *  Add:
+ *	public static JSONNode LoadFromText(string aFileName){}
+*	public void SaveToText(string aFileName){}
+ *  
+ *  
+ *  
+  * * * * */
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -639,7 +650,7 @@ namespace SimpleJSON
         {
 #if USE_FileIO
             using (var F = System.IO.File.OpenRead(aFileName))
-            {
+            2
                 return LoadFromStream(F);
             }
 #else
