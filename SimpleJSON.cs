@@ -461,7 +461,9 @@ namespace SimpleJSON
         {
 #if USE_FileIO
             System.IO.Directory.CreateDirectory((new System.IO.FileInfo(aFileName)).Directory.FullName);
-            using (var F = new FileStream(aFileName, FileMode.Create, FileAccess.Write))
+            //using(var F = System.IO.File.OpenWrite(aFileName))
+			//原因见备注：https://msdn.microsoft.com/zh-cn/library/system.io.file.openwrite.aspx
+			using (var F = new FileStream(aFileName, FileMode.Create, FileAccess.Write))
             {
                 SaveToCompressedStream(F);
             }
@@ -498,9 +500,28 @@ namespace SimpleJSON
         {
 #if USE_FileIO
             System.IO.Directory.CreateDirectory((new System.IO.FileInfo(aFileName)).Directory.FullName);
+            //using (var F = System.IO.File.OpenWrite(aFileName)) {
+
             using (var F = new FileStream(aFileName, FileMode.Create, FileAccess.Write))
             {
                 SaveToStream(F);
+            }
+#else
+            throw new Exception("Can't use File IO stuff in webplayer");
+#endif
+        }
+        public void SaveToText(string aFileName)
+        {
+#if USE_FileIO
+            System.IO.Directory.CreateDirectory((new System.IO.FileInfo(aFileName)).Directory.FullName);
+            //using (var F = System.IO.File.OpenWrite(aFileName)) {
+
+            using (var F = new FileStream(aFileName, FileMode.Create, FileAccess.Write))
+            {
+                using (StreamWriter streamwriter = new StreamWriter(F))
+                {
+                    streamwriter.Write(this.ToString());
+                }
             }
 #else
             throw new Exception("Can't use File IO stuff in webplayer");
@@ -621,6 +642,15 @@ namespace SimpleJSON
             {
                 return LoadFromStream(F);
             }
+#else
+            throw new Exception("Can't use File IO stuff in webplayer");
+#endif
+        }
+        public static JSONNode LoadFromText(string aFileName)
+        {
+#if USE_FileIO
+            string readtext = File.ReadAllText(aFileName);
+            return Parse(readtext);
 #else
             throw new Exception("Can't use File IO stuff in webplayer");
 #endif
